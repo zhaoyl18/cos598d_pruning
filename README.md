@@ -1,7 +1,7 @@
 # Network Pruning
 ### Assignment 1 for COS598D: System and Machine Learning
 
-In this assignment, you are required to evaluate three advanced neural network pruning methods, including SNIP [1], GraSP [2] and SynFlow [3], and compare with two baseline pruning methods,including random pruning and magnitude-based pruning. In `example/singleshot.py`, we provide an example to do singleshot global pruning without iterative training. In `example/multishot.py`, we provde an example to do multi-shot iterative training. This assignment focuses on the pruning protocol in `example/singleshot.py`. Your are going to explore various pruning methods on differnt hyperparameters and network architectures.
+In this assignment, you are required to evaluate three advanced neural network pruning methods, including SNIP [1], GraSP [2] and SynFlow [3], and compare with two baseline pruning methods, including random pruning and magnitude-based pruning. In `example/singleshot.py`, we provide an example to do singleshot global pruning without iterative training. In `example/multishot.py`, we provide an example to do multi-shot iterative training. This assignment focuses on the pruning protocol in `example/singleshot.py`. Your are going to explore various pruning methods on different hyperparameters and network architectures.
 
 ***References***
 
@@ -49,6 +49,8 @@ python main.py --model-class lottery --model vgg16 --dataset cifar10 --experimen
 ```
 python main.py --model-class default --model fc --dataset cifar10 --experiment singleshot --pruner synflow --compression 1
 ```
+***Testing accuracy (top 1)***
+
 |   Data  |   Arch |   Rand |  Mag |  SNIP |  GraSP | SynFlow       |   
 |----------------|----------------|-------------|-------------|-------------|---------------|----------------|
 |Cifar10 | VGG16 |    |      |        |     |         |
@@ -72,7 +74,7 @@ python main.py --model-class lottery --model vgg16 --dataset cifar10 --experimen
 | 1|    |      |        |      |         |
 | 2|    |      |        |      |         |
 
-***Testing time (infernce on testing dataset)***
+***Testing time (inference on testing dataset)***
 
 |   Compression |   Rand |  Mag |  SNIP |  GraSP | SynFlow       |   
 |----------------|-------------|-------------|-------------|---------------|----------------|
