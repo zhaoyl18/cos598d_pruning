@@ -13,7 +13,7 @@ In this assignment, you are required to evaluate three advanced neural network p
 
 ### Additional reading materials:
 
-A recent preprint [4] assessed [1-3].
+A recent paper [4] assessed [1-3].
 
 [4] Frankle, J., Dziugaite, G.K., Roy, D.M. and Carbin, M., 2020. Pruning Neural Networks at Initialization: Why are We Missing the Mark?. arXiv preprint arXiv:2009.08576.
 
