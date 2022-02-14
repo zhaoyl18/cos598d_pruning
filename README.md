@@ -37,6 +37,8 @@ For magnitude-based pruning, please set `--pre-epochs 200`. You can reduce the e
 
 Please use the default batch size, learning rate, optimizer in the following experiment. Please use the default training and testing spliting. Please monitor training loss and testing loss, and set suitable training epochs. You may try `--post-epoch 100` for Cifar10 and `--post-epoch 10` for MNIST.
 
+If you are using Google Colab, to accommodate the limited resources on Google Colab, you could use `--pre-epochs 10` for magnitude pruning and use `--post-epoch 10` for cifar10 for experiments on Colab. And state the epoch numbers you set in your report.
+
 ## You Tasks
 
 ### 1. Hyper-parameter tuning
