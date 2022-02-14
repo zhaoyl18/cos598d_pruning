@@ -117,6 +117,11 @@ For better visualization, you are encouraged to transfer the above three tables 
 Report the sparsity and draw the weight histograms of each layer using pruner Rand |  Mag |  SNIP |  GraSP | SynFlow with the following settings
 `model = vgg16`, `dataset=cifar10`, `compression = 0.5`
 
+Weight histogram is a figure showing the distribution of weight values. Its x axis is the value of each weight, y axis is the count of that value in the layer. Since the weights are floating points, you need to partite the weight values into multiple intervals and get the numbers of weights which fall into each interval. The weight histograms of all layers of one pruning method can be plotted in one figure (one histogram for each layer).
+
+This is an example of weight histograms for NN
+https://stackoverflow.com/questions/42315202/understanding-tensorboard-weight-histograms
+
 ***Bonus (optional)***
 
 Report the FLOP of each layer using pruner Rand |  Mag |  SNIP |  GraSP | SynFlow with the following settings
