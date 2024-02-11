@@ -18,17 +18,18 @@ A recent paper [4] assessed [1-3].
 [4] Frankle, J., Dziugaite, G.K., Roy, D.M. and Carbin, M., 2020. Pruning Neural Networks at Initialization: Why are We Missing the Mark?. arXiv preprint arXiv:2009.08576.
 
 ## Getting Started
-First clone this repo, then install all dependencies
+First clone this repo, then install all dependencies.
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
+(2024 Spring update from Rui: I have verified that the code in this assignment works for Python `v3.10.12`, torch `v2.1.2+cu121`, and torchvision `v0.16.2+cu121`. You might need to use different versions of these packages based on your environment. For any issues, make a post on Ed and I can help take a look.)
 
 ## How to Run 
 Run `python main.py --help` for a complete description of flags and hyperparameters. You can also go to `main.py` to check all the parameters. 
 
 Example: Initialize a VGG16, prune with SynFlow and train it to the sparsity of 10^-0.5 . We have sparsity = 10**(-float(args.compression)).
 ```
-python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner synflow --compression 0.5
+python3 main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner synflow --compression 0.5
 ```
 
 To save the experiment, please add `--expid {NAME}`. `--compression-list` and `--pruner-list` are not available for runing singleshot experiment. You can modify the souce code following `example/multishot.py` to run a list of parameters. `--prune-epochs` is also not available as it does not affect your pruning in singleshot setting. 
