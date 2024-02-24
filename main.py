@@ -119,11 +119,11 @@ if __name__ == '__main__':
         try:
             os.makedirs(result_dir)
         except FileExistsError:
-            val = ""
-            while val not in ['yes', 'no']:
-                val = input("Experiment '{}' with expid '{}' exists.  Overwrite (yes/no)? ".format(args.experiment, args.expid))
-            if val == 'no':
-                quit()
+            val = "yes"
+            # while val not in ['yes', 'no']:
+            #     val = input("Experiment '{}' with expid '{}' exists.  Overwrite (yes/no)? ".format(args.experiment, args.expid))
+            # if val == 'no':
+            #     quit()
 
     ## Save Args ##
     if args.save:
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     if args.experiment == 'multishot':
         multishot.run(args)
     if args.experiment == 'unit-conservation':
-    	unit_conservation.run(args)
+        unit_conservation.run(args)
     if args.experiment == 'layer-conservation':
         layer_conservation.run(args)
     if args.experiment == 'imp-conservation':

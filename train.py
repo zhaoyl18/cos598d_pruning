@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 
+import timeit
+
 def train(model, loss, optimizer, dataloader, device, epoch, verbose, log_interval=10):
     model.train()
     total = 0
@@ -25,6 +27,8 @@ def eval(model, loss, dataloader, device, verbose):
     total = 0
     correct1 = 0
     correct5 = 0
+    
+    start = timeit.default_timer()
     with torch.no_grad():
         for data, target in dataloader:
             data, target = data.to(device), target.to(device)
@@ -34,24 +38,29 @@ def eval(model, loss, dataloader, device, verbose):
             correct = pred.eq(target.view(-1, 1).expand_as(pred))
             correct1 += correct[:,:1].sum().item()
             correct5 += correct[:,:5].sum().item()
+    stop = timeit.default_timer()
+    time = stop - start
+    
     average_loss = total / len(dataloader.dataset)
     accuracy1 = 100. * correct1 / len(dataloader.dataset)
     accuracy5 = 100. * correct5 / len(dataloader.dataset)
     if verbose:
         print('Evaluation: Average loss: {:.4f}, Top 1 Accuracy: {}/{} ({:.2f}%)'.format(
             average_loss, correct1, len(dataloader.dataset), accuracy1))
-    return average_loss, accuracy1, accuracy5
+    return average_loss, accuracy1, accuracy5, time
 
 def train_eval_loop(model, loss, optimizer, scheduler, train_loader, test_loader, device, epochs, verbose):
-    test_loss, accuracy1, accuracy5 = eval(model, loss, test_loader, device, verbose)
-    rows = [[np.nan, test_loss, accuracy1, accuracy5]]
+    test_loss, accuracy1, accuracy5, time = eval(model, loss, test_loader, device, verbose)
+    rows = [[np.nan, test_loss, accuracy1, time]]
+    
+    
     for epoch in tqdm(range(epochs)):
         train_loss = train(model, loss, optimizer, train_loader, device, epoch, verbose)
-        test_loss, accuracy1, accuracy5 = eval(model, loss, test_loader, device, verbose)
-        row = [train_loss, test_loss, accuracy1, accuracy5]
+        test_loss, accuracy1, accuracy5, time = eval(model, loss, test_loader, device, verbose)
+        row = [train_loss, test_loss, accuracy1, time]
         scheduler.step()
         rows.append(row)
-    columns = ['train_loss', 'test_loss', 'top1_accuracy', 'top5_accuracy']
+    columns = ['train_loss', 'test_loss', 'top1_accuracy', 'time']
     return pd.DataFrame(rows, columns=columns)
 
 

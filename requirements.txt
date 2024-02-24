@@ -3,5 +3,5 @@ argparse
 matplotlib>2.0.0
 numpy>=1.0.0
 pandas
-torch
-torchvision
+torch==2.1.2
+torchvision==0.16.2

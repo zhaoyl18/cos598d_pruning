@@ -1,0 +1,6 @@
+CUDA_VISIBLE_DEVICES=2 python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner grasp --compression 0.05 --expid 17 --verbose --post-epochs 300 > output_grasp_005.txt
+CUDA_VISIBLE_DEVICES=2 python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner grasp --compression 0.1 --expid 17 --verbose --post-epochs 300 > output_grasp_01.txt
+CUDA_VISIBLE_DEVICES=2 python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner grasp --compression 0.2 --expid 17 --verbose --post-epochs 300 > output_grasp_02.txt
+CUDA_VISIBLE_DEVICES=2 python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner grasp --compression 0.5 --expid 17 --verbose --post-epochs 300 > output_grasp_05.txt
+CUDA_VISIBLE_DEVICES=2 python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner grasp --compression 1 --expid 17 --verbose --post-epochs 300 > output_grasp_1.txt
+CUDA_VISIBLE_DEVICES=2 python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner grasp --compression 2 --expid 17 --verbose --post-epochs 300 > output_grasp_2.txt
