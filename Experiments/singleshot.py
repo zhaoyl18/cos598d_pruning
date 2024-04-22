@@ -47,9 +47,9 @@ def run(args):
     
     ## Post-Train ##
     print('Post-Training for {} epochs.'.format(args.post_epochs))
-    post_result = train_eval_loop(model, loss, optimizer, scheduler, train_loader, 
+    post_result,memory = train_eval_loop_memory(model, loss, optimizer, scheduler, train_loader, 
                                   test_loader, device, args.post_epochs, args.verbose) 
-
+    
     ## Display Results ##
     frames = [pre_result.head(1), pre_result.tail(1), post_result.head(1), post_result.tail(1)]
     train_result = pd.concat(frames, keys=['Init.', 'Pre-Prune', 'Post-Prune', 'Final'])
@@ -75,6 +75,21 @@ def run(args):
         torch.save(model.state_dict(),"{}/model.pt".format(args.result_dir))
         torch.save(optimizer.state_dict(),"{}/optimizer.pt".format(args.result_dir))
         torch.save(scheduler.state_dict(),"{}/scheduler.pt".format(args.result_dir))
+        
+        with open('{}/summary_with_memory.txt'.format(args.result_dir), 'w') as file:
+                file.write(f"compression ratio: {args.compression}, pruner: {args.pruner}\n\n\n")
+                
+                file.write('Top1 Accuracy:  {:.2f}\n'.format(post_result['top1_accuracy'].iloc[-1]))
+                file.write('Time:  {:.10f}\n'.format(post_result['time'].iloc[-1]))
+                file.write("Parameter Sparsity: {}/{} ({:.4f})\n".format(total_params, possible_params, total_params / possible_params))
+                file.write("FLOP Sparsity: {}/{} ({:.4f})\n\n".format(total_flops, possible_flops, total_flops / possible_flops))
+                
+                file.write("GPU/CPU stats:\n")
+                for key, value in memory.items():
+                    print(f"{key}: {value}")
+                    file.write(f"{key}: {value}\n")
+                    
+        print("Memory stats have been saved to summary_with_memory.txt")
 
     import numpy as np
     import matplotlib.pyplot as plt
@@ -116,7 +131,7 @@ def run(args):
         # Compute the histogram
         hist, edges = np.histogram(layer_weights, bins=bins)
         # # Normalize the histogram
-        # hist = hist / np.max(hist)  # Normalize to the highest peak
+        hist = hist / np.sum(hist)  # Normalize to the highest peak
         # The x and y coordinates of each bar
         xpos, ypos = np.meshgrid(edges[:-1] + 0.25, [layer_positions[i]], indexing="ij")
         xpos = xpos.flatten()
@@ -141,9 +156,10 @@ def run(args):
     # Set labels for the other axes
     ax.set_xlabel('Weight values')
     ax.set_ylabel('Layers', labelpad=25) 
-    ax.set_zlabel('Count')
+    # ax.set_zlabel('Count')
 
     # Adjust the viewing angle if necessary
     ax.view_init(elev=20, azim=-35)
 
-    plt.savefig(f'weight_hist_{args.pruner}.png')
+    plt.savefig(f'{args.result_dir}/weight_hist_{args.pruner}.png', dpi=300, bbox_inches='tight')
+    plt.close(fig)

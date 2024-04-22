@@ -2,6 +2,7 @@ import torch
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import psutil
 
 import timeit
 
@@ -63,4 +64,45 @@ def train_eval_loop(model, loss, optimizer, scheduler, train_loader, test_loader
     columns = ['train_loss', 'test_loss', 'top1_accuracy', 'time']
     return pd.DataFrame(rows, columns=columns)
 
+# Initialize variables to store max memory usage
+max_cpu_usage = 0
+max_gpu_allocated = 0
+max_gpu_cached = 0
 
+def update_max_memory_usage():
+    global max_cpu_usage, max_gpu_allocated, max_gpu_cached
+    
+    # Update max CPU memory usage
+    current_cpu_usage = psutil.virtual_memory().percent
+    max_cpu_usage = max(max_cpu_usage, current_cpu_usage)
+
+    # Check if CUDA is available and update GPU memory usage
+    if torch.cuda.is_available():
+        current_gpu_allocated = torch.cuda.memory_allocated() / 1e9  # in GB
+        current_gpu_cached = torch.cuda.memory_reserved() / 1e9      # in GB
+        max_gpu_allocated = max(max_gpu_allocated, current_gpu_allocated)
+        max_gpu_cached = max(max_gpu_cached, current_gpu_cached)
+
+def print_max_memory_usage():
+    print(f"Max CPU memory usage: {max_cpu_usage}% of total")
+    if torch.cuda.is_available():
+        print(f"Max GPU memory allocated: {max_gpu_allocated:.2f} GB")
+        print(f"Max GPU memory cached: {max_gpu_cached:.2f} GB")
+
+def train_eval_loop_memory(model, loss, optimizer, scheduler, train_loader, test_loader, device, epochs, verbose):
+    test_loss, accuracy1, accuracy5, time = eval(model, loss, test_loader, device, verbose)
+    rows = [[np.nan, test_loss, accuracy1, time]]
+    
+    for epoch in tqdm(range(epochs)):
+        train_loss = train(model, loss, optimizer, train_loader, device, epoch, verbose)
+        test_loss, accuracy1, accuracy5, time = eval(model, loss, test_loader, device, verbose)
+        
+        # Update memory usage after each epoch
+        update_max_memory_usage()
+        
+        row = [train_loss, test_loss, accuracy1, time]
+        scheduler.step()
+        rows.append(row)
+
+    columns = ['train_loss', 'test_loss', 'top1_accuracy', 'time']
+    return pd.DataFrame(rows, columns=columns), {'cpu': max_cpu_usage, 'gpu_allocated': max_gpu_allocated, 'gpu_cached': max_gpu_cached}

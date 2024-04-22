@@ -1,6 +1,6 @@
 ## Assignment 1 : Network Pruning
 
-Yulai Zhao, yz6292, 
+Yulai Zhao, yz6292  
 
 ### 1. Hyper-parameter tuning
 
